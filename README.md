@@ -2,6 +2,7 @@
 A SpringBoot Backend Project
 
 ## Articles Directory Structure
+```
 articles/
 	|--article + <article_id>/
 		|--news.md
@@ -9,3 +10,4 @@ articles/
 		|--images/
 			|--image_1.png
 			|--image_2.png
+```

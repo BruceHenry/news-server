@@ -9,49 +9,101 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.bh.news.server.logic.ServerInteractor;
+import com.bh.news.server.pojo.Article;
+import com.bh.news.server.util.HttpResponseHelper;
+import com.bh.news.server.util.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @RestController
 public class ServerController {
 
+    @Autowired
+    ServerInteractor serverInteractor;
+
     @RequestMapping(value = "/**", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<?> getStatus(HttpServletRequest request) {
         System.out.println("It is working from:" + request.getRequestURI());
-        return ok("It is working");
+        return HttpResponseHelper.ok("It is working");
     }
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/article", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> getArticle(@RequestBody Article article) {
+        //todo
+        //update folder
+        return HttpResponseHelper.ok("It is working");
+    }
+
+    @RequestMapping(value = "/article", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> updateArticle(@RequestBody Article article) {
+        //todo
+        //update folder
+        return HttpResponseHelper.ok("It is working");
+    }
+
+    @RequestMapping(value = "/article", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<?> createArticle(@RequestBody Article article) {
+        //todo
+        Response response = serverInteractor.createArticle(article);
+        return HttpResponseHelper.ok("It is working");
+    }
+
+    @RequestMapping(value = "/article", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<?> deleteArticle(@RequestBody Article article) {
+        //todo
+        //delete folder
+        return HttpResponseHelper.ok("It is working");
+    }
+
+    @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> getFile(@PathVariable("article-id") String articleId, @PathVariable("file-name") String fileName) {
+        //todo
+        //get file
+        return HttpResponseHelper.ok("It is working");
+    }
+
+    @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> updateFile(@PathVariable("article-id") String articleId, @PathVariable("file-name") String fileName) {
+        //todo
+        //update file
+        return HttpResponseHelper.ok("It is working");
+    }
+
+    @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<?> createFile(@PathVariable("article-id") String articleId, @PathVariable("file-name") String fileName) {
+        //todo
+        //create file
+        return HttpResponseHelper.ok("It is working");
+    }
+
+    @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<?> deleteFile(@PathVariable("article-id") String articleId, @PathVariable("file-name") String fileName) {
+        //todo
+        //create file
+        return HttpResponseHelper.ok("It is working");
+    }
+
+
+    @RequestMapping(value = "/upload/", method = RequestMethod.POST)
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile multipartFile) {
-        if (!multipartFile.isEmpty()) {
-            try {
-                File file = new File(multipartFile.getOriginalFilename());
-                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
-                out.write(multipartFile.getBytes());
-                out.flush();
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                return "upload meets FileNotFoundException: " + e.getMessage();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "upload meets IOException: " + e.getMessage();
-            }
-            return "upload success";
-        } else {
-            return "upload failure: file is empty";
-        }
+        return serverInteractor.upload(multipartFile);
     }
 
     @RequestMapping(value = "/upload/batch", method = RequestMethod.POST)
@@ -79,44 +131,6 @@ public class ServerController {
         return "upload successful";
     }
 
-    private ResponseEntity<?> ok(String obj) {
-        HttpHeaders headers = new HttpHeaders();
-        if (headers.getContentType() != MediaType.APPLICATION_JSON) {
-            headers.setContentType(MediaType.APPLICATION_JSON);
-        }
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(obj);
-    }
 
-    private ResponseEntity<?> internalServerError(String obj) {
-        HttpHeaders headers = new HttpHeaders();
-        if (headers.getContentType() != MediaType.APPLICATION_JSON) {
-            headers.setContentType(MediaType.APPLICATION_JSON);
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body(obj);
-    }
-
-    private ResponseEntity<?> notFound(String obj) {
-        HttpHeaders headers = new HttpHeaders();
-        if (headers.getContentType() != MediaType.APPLICATION_JSON) {
-            headers.setContentType(MediaType.APPLICATION_JSON);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(obj);
-    }
-
-    private ResponseEntity<?> badRequest(String obj) {
-        HttpHeaders headers = new HttpHeaders();
-        if (headers.getContentType() != MediaType.APPLICATION_JSON) {
-            headers.setContentType(MediaType.APPLICATION_JSON);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).body(obj);
-    }
-
-    private ResponseEntity<?> unauthorized(String obj) {
-        HttpHeaders headers = new HttpHeaders();
-        if (headers.getContentType() != MediaType.APPLICATION_JSON) {
-            headers.setContentType(MediaType.APPLICATION_JSON);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).headers(headers).body(obj);
-    }
 
 }
