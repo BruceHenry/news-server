@@ -2,21 +2,16 @@ package com.bh.news.server;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.bh.news.server.logic.ServerInteractor;
 import com.bh.news.server.pojo.Article;
-import com.bh.news.server.util.HttpResponseHelper;
-import com.bh.news.server.util.Response;
+import com.bh.news.server.util.http.HttpResponseHelper;
+import com.bh.news.server.util.common.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

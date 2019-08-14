@@ -1,5 +1,6 @@
-package com.bh.news.server.util;
+package com.bh.news.server.util.http;
 
+import com.bh.news.server.util.common.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

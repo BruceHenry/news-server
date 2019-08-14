@@ -1,14 +1,12 @@
 package com.bh.news.server.logic;
 
 import com.bh.news.server.pojo.Article;
-import com.bh.news.server.util.Response;
+import com.bh.news.server.util.common.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;

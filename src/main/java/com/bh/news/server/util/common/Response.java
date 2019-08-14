@@ -1,4 +1,4 @@
-package com.bh.news.server.util;
+package com.bh.news.server.util.common;
 
 public class Response {
     private Integer code;
