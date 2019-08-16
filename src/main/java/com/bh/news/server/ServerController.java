@@ -24,14 +24,12 @@ public class ServerController {
     ServerInteractor serverInteractor;
 
     @RequestMapping(value = "/**", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<?> getStatus(HttpServletRequest request) {
         System.out.println("It is working from:" + request.getRequestURI());
         return HttpResponseHelper.ok("It is working");
     }
 
     @RequestMapping(value = "/article", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<?> getArticle(@RequestBody Article article) {
         //todo
         //update folder
@@ -39,7 +37,6 @@ public class ServerController {
     }
 
     @RequestMapping(value = "/article", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<?> updateArticle(@RequestBody Article article) {
         //todo
         //update folder
@@ -47,7 +44,6 @@ public class ServerController {
     }
 
     @RequestMapping(value = "/article", method = RequestMethod.PUT)
-    @ResponseBody
     public ResponseEntity<?> createArticle(@RequestBody Article article) {
         //todo
         Response response = serverInteractor.createArticle(article);
@@ -55,7 +51,6 @@ public class ServerController {
     }
 
     @RequestMapping(value = "/article", method = RequestMethod.DELETE)
-    @ResponseBody
     public ResponseEntity<?> deleteArticle(@RequestBody Article article) {
         //todo
         //delete folder
@@ -63,7 +58,6 @@ public class ServerController {
     }
 
     @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity<?> getFile(@PathVariable("article-id") String articleId, @PathVariable("file-name") String fileName) {
         //todo
         //get file
@@ -71,7 +65,6 @@ public class ServerController {
     }
 
     @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<?> updateFile(@PathVariable("article-id") String articleId, @PathVariable("file-name") String fileName) {
         //todo
         //update file
@@ -79,7 +72,6 @@ public class ServerController {
     }
 
     @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.PUT)
-    @ResponseBody
     public ResponseEntity<?> createFile(@PathVariable("article-id") String articleId, @PathVariable("file-name") String fileName) {
         //todo
         //create file
@@ -87,7 +79,6 @@ public class ServerController {
     }
 
     @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.DELETE)
-    @ResponseBody
     public ResponseEntity<?> deleteFile(@PathVariable("article-id") String articleId, @PathVariable("file-name") String fileName) {
         //todo
         //create file
@@ -95,15 +86,13 @@ public class ServerController {
     }
 
 
-    @RequestMapping(value = "/upload/", method = RequestMethod.POST)
-    @ResponseBody
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public String upload(@RequestParam("file") MultipartFile multipartFile) {
         return serverInteractor.upload(multipartFile);
     }
 
     @RequestMapping(value = "/upload/batch", method = RequestMethod.POST)
-    public @ResponseBody
-    String batchUpload(HttpServletRequest request) {
+    public String batchUpload(HttpServletRequest request) {
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         MultipartFile file = null;
         BufferedOutputStream stream = null;
