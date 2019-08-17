@@ -1,5 +1,5 @@
 # news-server
-A SpringBoot Backend Project
+A SpringBoot Backend Project. Will handle HTTP request from a web server by proxy.
 
 ## Articles Directory Structure
 ```
