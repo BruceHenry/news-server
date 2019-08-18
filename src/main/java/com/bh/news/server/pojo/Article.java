@@ -11,14 +11,21 @@ public class Article {
     private Date date;
 
     public Article() {
-        UUID uuid = UUID.randomUUID();
-        this.id = uuid.toString();
-        this.date = new Date();
     }
 
     public Article(String title) {
         this();
         this.title = title;
+    }
+
+    public void generateAttribute() {
+        if (this.id == null) {
+            UUID uuid = UUID.randomUUID();
+            this.id = uuid.toString();
+        }
+        if (this.date == null) {
+            this.date = new Date();
+        }
     }
 
     public String getId() {

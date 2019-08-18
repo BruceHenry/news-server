@@ -1,10 +1,15 @@
 package com.bh.news.server.util.file;
 
-public class FileHelperIo implements FileHelper{
+import java.io.*;
+
+public class FileHelperIo implements FileHelper {
 
     @Override
-    public boolean saveFile(String path, String fileName) {
-        return false;
+    public void saveFile(File file, byte[] fileContent) throws IOException {
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+        out.write(fileContent);
+        out.flush();
+        out.close();
     }
 
     @Override
@@ -22,9 +27,10 @@ public class FileHelperIo implements FileHelper{
         return false;
     }
 
+
     @Override
-    public boolean createFolder(String path) {
-        return false;
+    public boolean createFolder(File file) {
+        return file.mkdirs();
     }
 
     @Override

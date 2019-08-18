@@ -23,11 +23,11 @@ public class ServerController {
     @Autowired
     ServerInteractor serverInteractor;
 
-    @RequestMapping(value = "/**", method = RequestMethod.GET)
-    public ResponseEntity<?> getStatus(HttpServletRequest request) {
-        System.out.println("It is working from:" + request.getRequestURI());
-        return HttpResponseHelper.ok("It is working");
-    }
+//    @RequestMapping(value = "/**", method = RequestMethod.GET)
+//    public ResponseEntity<?> getStatus(HttpServletRequest request) {
+//        System.out.println("It is working from:" + request.getRequestURI());
+//        return HttpResponseHelper.ok("It is working");
+//    }
 
     @RequestMapping(value = "/article", method = RequestMethod.GET)
     public ResponseEntity<?> getArticle(@RequestBody Article article) {
@@ -45,16 +45,14 @@ public class ServerController {
 
     @RequestMapping(value = "/article", method = RequestMethod.PUT)
     public ResponseEntity<?> createArticle(@RequestBody Article article) {
-        //todo
         Response response = serverInteractor.createArticle(article);
-        return HttpResponseHelper.ok("It is working");
+        return HttpResponseHelper.respond(response);
     }
 
     @RequestMapping(value = "/article", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteArticle(@RequestBody Article article) {
-        //todo
-        //delete folder
-        return HttpResponseHelper.ok("It is working");
+        Response response = serverInteractor.deleteArticle(article);
+        return HttpResponseHelper.respond(response);
     }
 
     @RequestMapping(value = "/file/{article-id}/{file-name}", method = RequestMethod.GET)
@@ -87,8 +85,9 @@ public class ServerController {
 
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String upload(@RequestParam("file") MultipartFile multipartFile) {
-        return serverInteractor.upload(multipartFile);
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile multipartFile) {
+        Response response =  serverInteractor.uploadFile(multipartFile);
+        return HttpResponseHelper.respond(response);
     }
 
     @RequestMapping(value = "/upload/batch", method = RequestMethod.POST)

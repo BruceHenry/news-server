@@ -1,6 +1,7 @@
 package com.bh.news.server.util.http;
 
 import com.bh.news.server.util.common.Response;
+import com.google.gson.Gson;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,21 +9,21 @@ import org.springframework.http.ResponseEntity;
 
 public class HttpResponseHelper {
 
-    public static ResponseEntity<?> response(Response response) {
+    public static ResponseEntity<?> respond(Response response) {
         if (response.getCode() == 200) {
-            return ok(response.getMessage());
+            return ok(new Gson().toJson(response));
         }
         else if (response.getCode() == 400) {
-            return badRequest(response.getMessage());
+            return badRequest(new Gson().toJson(response));
         }
         else if (response.getCode() == 401) {
-            return unauthorized(response.getMessage());
+            return unauthorized(new Gson().toJson(response));
         }
         else if (response.getCode() == 404) {
-            return notFound(response.getMessage());
+            return notFound(new Gson().toJson(response));
         }
         else {
-            return internalServerError(response.getMessage());
+            return internalServerError(new Gson().toJson(response));
         }
     }
 
