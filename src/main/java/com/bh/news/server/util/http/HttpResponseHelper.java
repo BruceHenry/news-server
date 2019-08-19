@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 public class HttpResponseHelper {
 
-    public static ResponseEntity<?> respond(Response response) {
+    public static ResponseEntity<?> respondRest(Response response) {
         if (response.getCode() == 200) {
             return ok(new Gson().toJson(response));
         }
