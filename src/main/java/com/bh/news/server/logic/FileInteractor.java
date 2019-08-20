@@ -3,7 +3,8 @@ package com.bh.news.server.logic;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -30,10 +31,11 @@ public class FileInteractor extends BaseInteractor {
 			return new Response(400, "upload failure: file name is null/empty");
 		}
 
-		File file = new File(getArticleFolderName(articleFolder) + File.separator + newFileName);
+		Path path = Paths.get(getArticleFolderName(articleFolder), newFileName);
 
 		try {
-			FileUtil.saveFile(file, multipartFile.getBytes());
+			FileUtil.saveFile(path, multipartFile.getBytes());
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return new Response(500, "upload meets FileNotFoundException: " + e.getMessage());
@@ -73,9 +75,6 @@ public class FileInteractor extends BaseInteractor {
 		}
 		ByteArrayResource resource = null;
 		resource = new ByteArrayResource(FileUtil.readFileAsByteArray(filePath));
-		if (resource == null) {
-			throw new IOException();
-		}
 		return resource;
 	}
 

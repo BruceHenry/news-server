@@ -2,6 +2,8 @@ package com.bh.news.server.logic;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -54,14 +56,11 @@ public class FolderInteractor extends BaseInteractor {
 
 		article.generateAttribute();
 
-		File folderFile = new File(getArticleFolderName(article));
+		Path path = Paths.get(getArticleFolderName(article));
+
 		String articleJson = new Gson().toJson(article);
-		boolean createFolderResult;
 		try {
-			createFolderResult = FileUtil.createFolder(folderFile);
-			if (!createFolderResult) {
-				throw new IOException("failed creating folder");
-			}
+			FileUtil.createFolder(path);
 			saveArticleToJsonFile(article);
 		} catch (IOException e) {
 			return new Response(500, "failure: " + e.getMessage());

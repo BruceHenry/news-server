@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.util.FileSystemUtils;
@@ -16,9 +17,13 @@ public class FileUtil {
 		out.flush();
 		out.close();
 	}
+	
+	public static void saveFile(Path path, byte[] fileContent) throws IOException {
+		Files.write(path, fileContent);
+	}
 
-	public static boolean createFolder(File file) {
-		return file.mkdirs();
+	public static void createFolder(Path path) throws IOException {
+		Files.createDirectories(path);
 	}
 	
 	public static String readFileAsString(String filePath) throws IOException {
