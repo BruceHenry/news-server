@@ -14,15 +14,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bh.news.server.util.common.Response;
 import com.bh.news.server.util.file.FileUtil;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class FileInteractor extends BaseInteractor {
 
+	private final static String INDEX_HTML = "index.html";
+	private final static String MARKDOWN_EXTENSION = "md";
+
 	public Response createFile(String articleFolder, MultipartFile multipartFile) {
-		if (articleFolder == null || articleFolder.isEmpty()) {
-			return new Response(400, "delete failure: article name is null/empty");
-		}
 		if (multipartFile.isEmpty()) {
 			return new Response(400, "upload failure: file is empty");
 		}
@@ -35,7 +39,6 @@ public class FileInteractor extends BaseInteractor {
 
 		try {
 			FileUtil.saveFile(path, multipartFile.getBytes());
-			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return new Response(500, "upload meets FileNotFoundException: " + e.getMessage());
@@ -47,9 +50,6 @@ public class FileInteractor extends BaseInteractor {
 	}
 
 	public Response deleteFile(String articleFolder, String fileName) {
-		if (articleFolder == null || articleFolder.isEmpty()) {
-			return new Response(400, "delete failure: article name is null/empty");
-		}
 		if (fileName == null || fileName.isEmpty()) {
 			return new Response(400, "delete failure: file name is null/empty");
 		}
@@ -78,4 +78,34 @@ public class FileInteractor extends BaseInteractor {
 		return resource;
 	}
 
+	public Response saveMarkdownFile(String articleFolder, MultipartFile multipartFile) {
+		if (multipartFile.isEmpty()) {
+			return new Response(400, "upload failure: markdown file is empty");
+		}
+		if (!FileUtil.isFileExtensionMatch(multipartFile.getOriginalFilename(), MARKDOWN_EXTENSION)) {
+			return new Response(400, "upload failure: must be a markdown file that ends with extension '.md'");
+		}
+
+		Path path = Paths.get(getArticleFolderName(articleFolder), INDEX_HTML);
+		String content = null;
+		try {
+			content = new String(multipartFile.getBytes());
+		} catch (IOException e) {
+			return new Response(400, "unable to parse markdown file");
+		}
+		
+		MutableDataSet options = new MutableDataSet();
+		Parser parser = Parser.builder(options).build();
+		HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+		
+		Node document = parser.parse(content);
+        String html = renderer.render(document);
+        try {
+			FileUtil.saveFile(path, html.getBytes());
+		} catch (IOException e) {
+			return new Response(500, "failed saving html file");
+		}
+        
+		return new Response(200, "success");
+	}
 }

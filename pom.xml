@@ -35,6 +35,12 @@
 			<artifactId>gson</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-all</artifactId>
+			<version>0.50.26</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

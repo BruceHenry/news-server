@@ -42,4 +42,17 @@ public class FileUtil {
 		return FileSystemUtils.deleteRecursively(file);
 	}
 	
+	public static String getFileExtension(String fileName) {
+		int i = fileName.lastIndexOf('.');
+		if (i > 0) {
+		    return fileName.substring(i+1);
+		}
+		return "";
+	}
+	
+	public static boolean isFileExtensionMatch(String fileName, String extensionName) {
+		return getFileExtension(fileName).equals(extensionName);
+	}
+	
+	
 }

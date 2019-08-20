@@ -28,9 +28,6 @@ public class EnvironmentMap {
 		for (Entry<String, String> entry :sysEnv.entrySet()) {
 			envMap.put(entry.getKey(), entry.getValue());
 		}
-		for (Entry<String, String> entry :envMap.entrySet()) {
-			System.out.println(entry.getKey()+" --- "+entry.getValue());
-		}
 	}
 
 	public static synchronized EnvironmentMap getInstance() {

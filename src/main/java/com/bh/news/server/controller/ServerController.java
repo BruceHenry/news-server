@@ -14,6 +14,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,11 +40,12 @@ public class ServerController {
 	@Autowired
 	FolderInteractor folderInteractor;
 
-//    @RequestMapping(value = "/**", method = RequestMethod.GET)
-//    public ResponseEntity<?> getStatus(HttpServletRequest request) {
-//        System.out.println("It is working from:" + request.getRequestURI());
-//        return HttpResponseHelper.ok("It is working");
-//    }
+
+	@ExceptionHandler(value=Exception.class)
+	public ResponseEntity<?> handleException(HttpServletRequest req, Exception e) {
+		//todo
+		return HttpResponseHelper.internalServerError(e.getMessage());
+	}
 
 	@RequestMapping(value = "/article", method = RequestMethod.GET)
 	public ResponseEntity<?> getArticle(@RequestBody Article article) {
@@ -111,6 +113,14 @@ public class ServerController {
 		Response response = fileInteractor.deleteFile(articleFolder, fileName);
 		return HttpResponseHelper.respondRest(response);
 	}
+	
+	@RequestMapping(value = "/file/{article-folder}/markdown", method = RequestMethod.POST)
+	public ResponseEntity<?> uploadMarkdown(@PathVariable("article-folder") String articleFolder,
+			@RequestParam("file") MultipartFile multipartFile) {
+		Response response = fileInteractor.saveMarkdownFile(articleFolder, multipartFile);
+		return HttpResponseHelper.respondRest(response);
+	}
+	
 
 	@RequestMapping(value = "/upload/batch", method = RequestMethod.POST)
 	public String batchUpload(HttpServletRequest request) {
