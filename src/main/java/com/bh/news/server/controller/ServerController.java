@@ -47,6 +47,12 @@ public class ServerController {
 		return HttpResponseHelper.internalServerError(e.getMessage());
 	}
 
+	@RequestMapping(value = "/articles", method = RequestMethod.GET)
+	public ResponseEntity<?> getArticleList() {
+		Response response = folderInteractor.getArticleList();
+		return HttpResponseHelper.ok(response.getMessage());
+	}
+
 	@RequestMapping(value = "/article", method = RequestMethod.GET)
 	public ResponseEntity<?> getArticle(@RequestBody Article article) {
 		Response response = folderInteractor.getArticle(article);
@@ -120,7 +126,8 @@ public class ServerController {
 		Response response = fileInteractor.saveMarkdownFile(articleFolder, multipartFile);
 		return HttpResponseHelper.respondRest(response);
 	}
-	
+
+
 
 	@RequestMapping(value = "/upload/batch", method = RequestMethod.POST)
 	public String batchUpload(HttpServletRequest request) {

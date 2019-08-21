@@ -2,8 +2,13 @@ package com.bh.news.server.logic;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -26,8 +31,8 @@ public class FolderInteractor extends BaseInteractor {
 			return validationResponse;
 		}
 
-		File file = new File(getArticleFolderName(article));
-		if (!file.exists()) {
+		Path path = Paths.get(getArticleFolderName(article));
+		if (!Files.exists(path)) {
 			return new Response(400, "unable to find file");
 		}
 
@@ -117,4 +122,30 @@ public class FolderInteractor extends BaseInteractor {
 		return new Response(200, "success");
 	}
 
+    public Response getArticleList() {
+		List<Article> articleList = new LinkedList<>();
+		Gson gson = new Gson();
+		Path rootPath = Paths.get(SAVE_PATH);
+
+		try (Stream<Path> walk = Files.walk(rootPath)) {
+
+			List<String> result = walk.filter(Files::isDirectory)
+					.map(Path::toString).collect(Collectors.toList());
+
+			for (String folderPath:result) {
+				Path path = Paths.get(folderPath);
+				if (path.equals(rootPath)) {
+					continue;
+				}
+				String jsonString = FileUtil.readFileAsString(folderPath + File.separator + ARTICLE_JSON);
+				Article article = gson.fromJson(jsonString, Article.class);
+				articleList.add(article);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new Response(500, "failed to get article json list: " + e.getMessage());
+		}
+
+		return new Response(200, gson.toJson(articleList));
+	}
 }
