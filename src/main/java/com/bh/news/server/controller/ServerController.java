@@ -72,9 +72,9 @@ public class ServerController {
 		return HttpResponseHelper.respondRest(response);
 	}
 
-	@RequestMapping(value = "/article", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteArticle(@RequestBody Article article) {
-		Response response = folderInteractor.deleteArticle(article);
+	@RequestMapping(value = "/article/{article-folder}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteArticle(@PathVariable("article-folder") String articleFolde) {
+		Response response = folderInteractor.deleteArticle(articleFolde);
 		return HttpResponseHelper.respondRest(response);
 	}
 
@@ -104,6 +104,12 @@ public class ServerController {
 				.body(byteArrayResource);
 
 		return resp;
+	}
+	
+	@RequestMapping(value = "/file/{article-folder}", method = RequestMethod.GET)
+	public ResponseEntity<?> getArticleFiles(@PathVariable("article-folder") String articleFolder) {
+		Response response = folderInteractor.getArticleFiles(articleFolder);
+		return HttpResponseHelper.ok(response.getMessage());
 	}
 
 	@RequestMapping(value = "/file/{article-folder}", method = RequestMethod.POST)

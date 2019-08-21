@@ -85,8 +85,15 @@ public class FileInteractor extends BaseInteractor {
 		if (!FileUtil.isFileExtensionMatch(multipartFile.getOriginalFilename(), MARKDOWN_EXTENSION)) {
 			return new Response(400, "upload failure: must be a markdown file that ends with extension '.md'");
 		}
+		
+		String mdFileName = multipartFile.getOriginalFilename();
+		if (mdFileName == null || mdFileName.isEmpty()) {
+			return new Response(400, "upload failure: file name is null/empty");
+		}
 
-		Path path = Paths.get(getArticleFolderName(articleFolder), INDEX_HTML);
+		Path mdPath = Paths.get(getArticleFolderName(articleFolder), mdFileName);
+		
+		Path htmlPath = Paths.get(getArticleFolderName(articleFolder), INDEX_HTML);
 		String content = null;
 		try {
 			content = new String(multipartFile.getBytes());
@@ -101,7 +108,8 @@ public class FileInteractor extends BaseInteractor {
 		Node document = parser.parse(content);
         String html = renderer.render(document);
         try {
-			FileUtil.saveFile(path, html.getBytes());
+        	FileUtil.saveFile(mdPath, multipartFile.getBytes());
+			FileUtil.saveFile(htmlPath, html.getBytes());
 		} catch (IOException e) {
 			return new Response(500, "failed saving html file");
 		}

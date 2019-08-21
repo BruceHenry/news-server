@@ -55,7 +55,7 @@ public class FolderInteractor extends BaseInteractor {
 	}
 
 	public Response createArticle(Article article) {
-		if (article.getTitle() == null) {
+		if (article.getTitle() == null || article.getTitle().isEmpty()) {
 			return new Response(400, "failure: article title is missing");
 		}
 
@@ -74,13 +74,9 @@ public class FolderInteractor extends BaseInteractor {
 		return new Response(200, articleJson);
 	}
 
-	public Response deleteArticle(Article article) {
-		Response validationResponse = validateArticle(article);
-		if (validationResponse != null) {
-			return validationResponse;
-		}
+	public Response deleteArticle(String articleFolde) {
 
-		File file = new File(getArticleFolderName(article));
+		File file = new File(SAVE_PATH + File.separator + articleFolde);
 		if (!file.exists()) {
 			return new Response(400, "unable to find file");
 		}
@@ -122,17 +118,20 @@ public class FolderInteractor extends BaseInteractor {
 		return new Response(200, "success");
 	}
 
-    public Response getArticleList() {
+	public Response getArticleList() {
 		List<Article> articleList = new LinkedList<>();
 		Gson gson = new Gson();
 		Path rootPath = Paths.get(SAVE_PATH);
 
+		if (!Files.exists(rootPath)) {
+			return new Response(200, gson.toJson(articleList));
+		}
+
 		try (Stream<Path> walk = Files.walk(rootPath)) {
 
-			List<String> result = walk.filter(Files::isDirectory)
-					.map(Path::toString).collect(Collectors.toList());
+			List<String> result = walk.filter(Files::isDirectory).map(Path::toString).collect(Collectors.toList());
 
-			for (String folderPath:result) {
+			for (String folderPath : result) {
 				Path path = Paths.get(folderPath);
 				if (path.equals(rootPath)) {
 					continue;
@@ -147,5 +146,24 @@ public class FolderInteractor extends BaseInteractor {
 		}
 
 		return new Response(200, gson.toJson(articleList));
+	}
+
+	public Response getArticleFiles(String articleFolder) {
+
+		Path rootPath = Paths.get(SAVE_PATH, articleFolder);
+		if (!Files.exists(rootPath)) {
+			return new Response(404, "unable to find" + articleFolder);
+		}
+
+		List<String> fileList = new LinkedList<>();
+		try (Stream<Path> walk = Files.walk(rootPath)) {
+			fileList = walk.filter(Files::isRegularFile).filter(p -> !p.equals(rootPath)).map(Path::getFileName)
+					.map(Path::toString).collect(Collectors.toList());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new Response(500, "failed to get file list from " + articleFolder + ": " + e.getMessage());
+		}
+		
+		return new Response(200, new Gson().toJson(fileList));
 	}
 }
