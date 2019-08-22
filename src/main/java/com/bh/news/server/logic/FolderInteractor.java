@@ -25,20 +25,16 @@ import com.google.gson.JsonSyntaxException;
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class FolderInteractor extends BaseInteractor {
 
-	public Response getArticle(Article article) {
-		Response validationResponse = validateArticle(article);
-		if (validationResponse != null) {
-			return validationResponse;
-		}
-
-		Path path = Paths.get(getArticleFolderName(article));
+	public Response getArticle(String articleFolder) {
+		String folderPath = SAVE_PATH + File.separator + articleFolder;
+		Path path = Paths.get(folderPath);
 		if (!Files.exists(path)) {
-			return new Response(400, "unable to find file");
+			return new Response(404, "unable to find file");
 		}
 
 		String articleJson = null;
 		try {
-			articleJson = FileUtil.readFileAsString(getArticleFolderName(article) + File.separator + ARTICLE_JSON);
+			articleJson = FileUtil.readFileAsString(folderPath + File.separator + ARTICLE_JSON);
 			Gson gson = new Gson();
 			Article parsedArticle = gson.fromJson(articleJson, Article.class);
 			articleJson = gson.toJson(parsedArticle);
@@ -74,9 +70,9 @@ public class FolderInteractor extends BaseInteractor {
 		return new Response(200, articleJson);
 	}
 
-	public Response deleteArticle(String articleFolde) {
+	public Response deleteArticle(String articleFolder) {
 
-		File file = new File(SAVE_PATH + File.separator + articleFolde);
+		File file = new File(SAVE_PATH + File.separator + articleFolder);
 		if (!file.exists()) {
 			return new Response(400, "unable to find file");
 		}

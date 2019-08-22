@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bh.news.server.logic.FileInteractor;
 import com.bh.news.server.logic.FolderInteractor;
+
 import com.bh.news.server.pojo.Article;
 import com.bh.news.server.util.common.Response;
 import com.bh.news.server.util.http.HttpResponseHelper;
@@ -50,12 +51,18 @@ public class ServerController {
 	@RequestMapping(value = "/articles", method = RequestMethod.GET)
 	public ResponseEntity<?> getArticleList() {
 		Response response = folderInteractor.getArticleList();
+		if (response.getCode() != 200) {
+			return HttpResponseHelper.respondRest(response);
+		}
 		return HttpResponseHelper.ok(response.getMessage());
 	}
 
-	@RequestMapping(value = "/article", method = RequestMethod.GET)
-	public ResponseEntity<?> getArticle(@RequestBody Article article) {
-		Response response = folderInteractor.getArticle(article);
+	@RequestMapping(value = "/article/{article-folder}", method = RequestMethod.GET)
+	public ResponseEntity<?> getArticle(@PathVariable("article-folder") String articleFolder) {
+		Response response = folderInteractor.getArticle(articleFolder);
+		if (response.getCode() != 200) {
+			return HttpResponseHelper.respondRest(response);
+		}
 		return HttpResponseHelper.ok(response.getMessage());
 	}
 
@@ -73,8 +80,8 @@ public class ServerController {
 	}
 
 	@RequestMapping(value = "/article/{article-folder}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteArticle(@PathVariable("article-folder") String articleFolde) {
-		Response response = folderInteractor.deleteArticle(articleFolde);
+	public ResponseEntity<?> deleteArticle(@PathVariable("article-folder") String articleFolder) {
+		Response response = folderInteractor.deleteArticle(articleFolder);
 		return HttpResponseHelper.respondRest(response);
 	}
 
