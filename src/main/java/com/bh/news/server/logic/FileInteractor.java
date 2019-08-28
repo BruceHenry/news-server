@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ByteArrayResource;
@@ -115,5 +118,31 @@ public class FileInteractor extends BaseInteractor {
 		}
         
 		return new Response(200, "success");
+	}
+
+	public Response saveMultipleFiles(String articleFolder, List<MultipartFile> files) {
+		List<String> results = new ArrayList<>();
+		for (MultipartFile multipartFile: files) {
+			if (multipartFile.isEmpty()) {
+				results.add("file is empty");
+				continue;
+			}
+			String newFileName = multipartFile.getOriginalFilename();
+			if (newFileName == null || newFileName.isEmpty()) {
+				results.add("file name is null/empty");
+				continue;
+			}
+			Path path = Paths.get(getArticleFolderName(articleFolder), newFileName);
+			try {
+				FileUtil.saveFile(path, multipartFile.getBytes());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				results.add("upload meets FileNotFoundException: " + e.getMessage());
+			} catch (IOException e) {
+				e.printStackTrace();
+				results.add("upload meets IOException: " + e.getMessage());
+			}
+		}
+		return new Response(200, new Gson().toJson(results));
 	}
 }

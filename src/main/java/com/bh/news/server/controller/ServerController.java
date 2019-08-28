@@ -140,6 +140,13 @@ public class ServerController {
 		return HttpResponseHelper.respondRest(response);
 	}
 
+	@RequestMapping(value = "/file/{article-folder}/files", method = RequestMethod.POST)
+	public ResponseEntity<?> uploadMultipleFiles(@PathVariable("article-folder") String articleFolder,
+												 HttpServletRequest request) {
+		List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+		Response response = fileInteractor.saveMultipleFiles(articleFolder, files);
+		return HttpResponseHelper.respondRest(response);
+	}
 
 
 	@RequestMapping(value = "/upload/batch", method = RequestMethod.POST)
